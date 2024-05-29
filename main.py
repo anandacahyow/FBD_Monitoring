@@ -77,7 +77,7 @@ def final_dataframe(algorithms, data, pca_result, numeric_cols, data_index):
 def plot_clusters(algorithms, data, pca_result, numeric_cols, data_index):
     method_names = [type(algorithm).__name__ for algorithm in algorithms]
     fig_timeseries_cluster = make_subplots(rows=len(numeric_cols), cols=1, subplot_titles=numeric_cols, shared_xaxes=True, vertical_spacing=0.01, horizontal_spacing=0.1)
-
+    
     for i, algorithm in enumerate(algorithms, start=1):
         algorithm.fit(pca_result)
         
@@ -85,11 +85,25 @@ def plot_clusters(algorithms, data, pca_result, numeric_cols, data_index):
         data.insert(0, f'Cluster_{type(algorithm).__name__}', cluster_labels)
     
         combined_data = pd.concat([data_index, data], axis=1)
-         
-        unique_clusters = data[f'Cluster_{type(algorithm).__name__}'].unique()
+        
+        # Calculate centroids of each cluster
+        unique_clusters = np.unique(cluster_labels)
+        cluster_centroids = []
+        for cluster in unique_clusters:
+            cluster_data = pca_result[cluster_labels == cluster]
+            centroid = np.mean(cluster_data, axis=0)
+            cluster_centroids.append(centroid)
+        
+        # Determine leftmost, central, and rightmost clusters based on their centroids
+        centroids_proj = [centroid[0] for centroid in cluster_centroids]  # Considering only the first principal component for simplicity
+        leftmost_cluster = np.argmin(centroids_proj)
+        rightmost_cluster = np.argmax(centroids_proj)
+        central_cluster = np.argsort(centroids_proj)[len(centroids_proj)//2]
+        
+        # Assign colors based on centroid position
         hsl_colors = ['hsl(200, 80%, 50%)', 'hsl(100, 80%, 50%)', 'hsl(0, 80%, 50%)']
-        cluster_colors = {cluster: color for cluster, color in zip(unique_clusters, hsl_colors)}
-
+        cluster_colors = {leftmost_cluster: 'hsl(240, 80%, 50%)', central_cluster: 'hsl(120, 80%, 50%)', rightmost_cluster: 'hsl(0, 80%, 50%)'}
+        
         for j, col in enumerate(numeric_cols, start=1):
             cluster_col = data[f'Cluster_{type(algorithm).__name__}']
             fig_timeseries_cluster.add_trace(go.Scatter(x=data_index['Datetime'], y=data[col], mode='lines', name=col, marker=dict(color='grey', size=5)), row=j, col=1)
