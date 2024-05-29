@@ -32,6 +32,7 @@ def load_data(file):
             
     data = data.iloc[-2500:, :]
     data = data[['Datetime'] + [col for col in data.columns if col not in ['Date On Shift', 'Time']]]
+    st.write(data)
     return data
 
 def preprocess_data(data):
@@ -122,7 +123,6 @@ def main():
 
     if uploaded_file is not None:
         data = load_data(uploaded_file)
-        st.write(data)
         
         # Sidebar for data filter
         st.sidebar.title("🔍 Data Filter:")
