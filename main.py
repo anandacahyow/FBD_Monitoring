@@ -21,8 +21,7 @@ def load_data(file):
                'PT6711 Mix. Press. 1', 'PT6712 Mix. Press. 2', 'M6701 Speed Exh', 'M6702 Speed Blwr 1',
                'M6703 Speed Blwr 2', 'M6704 Speed Blwr 3', 'M6705 Speed Blwr 4', 'M6706 Speed FBD Vibr',
                'IS_SteamSupply', 'IS_SteamFlow', 'IS_SteamFlowTOT']
-    
-    data = load_data(file, columns)
+    data = pd.read_csv(file, usecols=columns)
     data['Datetime'] = pd.to_datetime(data['Date On Shift'] + ' ' + data['Time'])
     
     for i in range(1, len(data)):
@@ -74,7 +73,7 @@ def main():
     st.title('Your App Title')
     st.sidebar.title('Upload CSV File')
     
-    file = st.sidebar.file_uploader("Upload CSV", type=['csv'])
+    file = st.file_uploader("Upload CSV", type=['csv'])
     
     if file is not None:
         data = load_data(file)
