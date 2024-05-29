@@ -125,7 +125,7 @@ def main():
         data = load_data(uploaded_file)
 
         filtered_data = data.copy()        
-        st.write(filtered_data)
+        # Slice data
         filtered_data, data_index, numeric_cols = preprocess_data(filtered_data)
         data2, data_index2, numeric_cols2 = filtered_data.copy(), data_index.copy(), numeric_cols.copy()
         
