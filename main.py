@@ -85,15 +85,14 @@ def plot_clusters(algorithms, data, pca_result, numeric_cols, data_index):
     
     fig_timeseries_cluster.update_layout(height=8000, width=1000, title=f"MaggiPCF FBD: Measurement Timeseries Plot for {type(algorithm).__name__}", showlegend=False)
     st.plotly_chart(fig_timeseries_cluster)
-    st.subheader("Clustering Visualization")
 
 def main():
-    st.title("Streamlit Clustering App")
+    st.title("⏱ FBD-360 CLustering App")
     uploaded_file = st.file_uploader("Upload CSV file", type=["csv"])
     if uploaded_file is not None:
         data = load_data(uploaded_file)
         data, data_index, numeric_cols = preprocess_data(data)
-        create_correlation_heatmap(data)
+        #create_correlation_heatmap(data)
         
         n_components = len(data.columns)
         pca_result = apply_pca(data, n_components)
