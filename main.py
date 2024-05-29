@@ -140,7 +140,7 @@ def main():
         st.write(start_datetime)
         st.write(end_datetime)
         
-        filtered_df = data[(data['Datetime'] >= start_datetime) & (data['Datetime'] <= end_datetime)]
+        filtered_df = data.loc[(data['Datetime'] >= start_datetime) & (data['Datetime'] <= end_datetime)]
 
         #filtered_data = data.copy()        
         filtered_data, data_index, numeric_cols = preprocess_data(filtered_data)
