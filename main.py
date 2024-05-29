@@ -102,7 +102,8 @@ def plot_clusters(algorithms, data, pca_result, numeric_cols, data_index):
         
         # Assign colors based on centroid position
         hsl_colors = ['hsl(200, 80%, 50%)', 'hsl(100, 80%, 50%)', 'hsl(0, 80%, 50%)']
-        cluster_colors = {leftmost_cluster: 'hsl(240, 80%, 50%)', central_cluster: 'hsl(120, 80%, 50%)', rightmost_cluster: 'hsl(0, 80%, 50%)'}
+        #cluster_colors = {leftmost_cluster: 'hsl(240, 80%, 50%)', central_cluster: 'hsl(120, 80%, 50%)', rightmost_cluster: 'hsl(0, 80%, 50%)'}
+        cluster_colors = {leftmost_cluster: 'hsl(0, 80%, 50%)', central_cluster: 'hsl(120, 80%, 50%)', rightmost_cluster: 'hsl(240, 80%, 50%)'}
         
         for j, col in enumerate(numeric_cols, start=1):
             cluster_col = data[f'Cluster_{type(algorithm).__name__}']
