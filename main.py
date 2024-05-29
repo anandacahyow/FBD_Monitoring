@@ -131,8 +131,8 @@ def main():
         start_time = st.time_input("Start Time", value=pd.to_datetime('00:00').time())
         end_time = st.time_input("End Time", value=pd.to_datetime('23:59').time())
 
-        start_datetime = pd.to_datetime(str(start_date) + ' ' + str(start_time))
-        end_datetime = pd.to_datetime(str(end_date) + ' ' + str(end_time))
+        start_datetime = datetime.combine(start_date, start_time)
+        end_datetime = datetime.combine(end_date, end_time)
         
         # Filter DataFrame based on the selected date and time ranges
         data = data.drop_duplicates(subset=['Datetime'], keep='first')
