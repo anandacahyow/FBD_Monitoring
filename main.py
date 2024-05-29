@@ -146,7 +146,7 @@ def main():
         pca_result = apply_pca(data, n_components)
         
         # Plot Clusters
-        algorithm = AgglomerativeClustering(n_clusters=3)
+        algorithm = [AgglomerativeClustering(n_clusters=3)]
         plot_clusters(algorithm, data, pca_result, numeric_cols, data_index)
 
 if __name__ == "__main__":
