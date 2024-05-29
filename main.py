@@ -124,27 +124,8 @@ def main():
     if uploaded_file is not None:
         data = load_data(uploaded_file)
 
-        start_date = st.date_input("Start Date", value=pd.to_datetime('2024-04-15'))
-        end_date = st.date_input("End Date", value=pd.to_datetime('2024-05-30'))
-        
-        # Create Streamlit widgets for start and end times
-        start_time = st.time_input("Start Time", value=pd.to_datetime('00:00').time())
-        end_time = st.time_input("End Time", value=pd.to_datetime('23:59').time())
-
-        start_datetime = datetime.combine(start_date, start_time)
-        end_datetime = datetime.combine(end_date, end_time)
-        
-        # Filter DataFrame based on the selected date and time ranges
-        #data = data.drop_duplicates(subset=['Datetime'], keep='first')
-        #data.reset_index(drop=True, inplace=True)
-        st.write(start_datetime)
-        st.write(end_datetime)
-        st.write(data)
-
-        
-        filtered_df = data.loc[(data['Datetime'] >= start_datetime) & (data['Datetime'] <= end_datetime)]
-
-        #filtered_data = data.copy()        
+        filtered_data = data.copy()        
+        st.write(filtered_data)
         filtered_data, data_index, numeric_cols = preprocess_data(filtered_data)
         data2, data_index2, numeric_cols2 = filtered_data.copy(), data_index.copy(), numeric_cols.copy()
         
