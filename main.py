@@ -47,10 +47,11 @@ def preprocess_data(data):
 
 def create_correlation_heatmap(data):
     correlation_matrix = data.corr()
+    correlation_matrix.to_excel("correlation_matrix.xlsx")
     fig_corr_heatmap = px.imshow(correlation_matrix,
                                  labels=dict(x="Numerical Columns", y="Numerical Columns"))
     fig_corr_heatmap.update_layout(title="Correlation Heatmap")
-    st.plotly_chart(fig_corr_heatmap)
+    #fig_corr_heatmap.write_html("correlation_heatmap.html")
 
 def apply_pca(data, n_components):
     scaler = StandardScaler()
@@ -59,15 +60,68 @@ def apply_pca(data, n_components):
     pca = PCA(n_components=n_components)
     pca_result = pca.fit_transform(scaled_data)
     
-    return pca_result
+    principal_components = pca.components_
+    pc_df = pd.DataFrame(principal_components, columns=data.columns)
+    pc_df.to_excel("Database/PCA_components.xlsx")
+    
+    eigenvalues = pca.explained_variance_
+    percentage = (eigenvalues / eigenvalues.sum()) * 100
+    eigenvalues_df = pd.DataFrame({'Eigenvalues (Explained Variance)': eigenvalues, 'Percentage': percentage})
+    eigenvalues_df.to_excel("Database/eigen.xlsx")
+    
+    return pca_result, principal_components
 
-def plot_clusters(algorithm, data, pca_result, numeric_cols, data_index):
-    cluster_labels = algorithm.labels_
-    data.insert(0, 'Cluster', cluster_labels)
+def plot_clusters(algorithms, data, pca_result, numeric_cols, data_index):
+    method_names = [type(algorithm).__name__ for algorithm in algorithms]
+    fig = make_subplots(rows=len(algorithms), cols=1, subplot_titles=method_names)
+    fig_timeseries_cluster = make_subplots(rows=len(numeric_cols), cols=1, subplot_titles=numeric_cols, shared_xaxes=True, vertical_spacing=0.01, horizontal_spacing=0.1)
+
+    for i, algorithm in enumerate(algorithms, start=1):
+        algorithm.fit(pca_result)
+        
+        cluster_labels = algorithm.labels_
+        data.insert(0, f'Cluster_{type(algorithm).__name__}', cluster_labels)
     
-    combined_data = pd.concat([data_index, data], axis=1)
+        combined_data = pd.concat([data_index, data], axis=1)
+        combined_data.to_excel(f'Database/{type(algorithm).__name__}_clustered_data.xlsx', index=False)
+        
+        for cluster_label in np.unique(cluster_labels):
+            cluster_data = pca_result[cluster_labels == cluster_label]
+            sorted_clusters = sorted(
+                np.unique(cluster_labels), 
+                key=lambda cluster_label: np.mean(pca_result[cluster_labels == cluster_label], axis=0)[0]
+            )
+            text = data_index['Recipe Name']
+            text2 = data_index['Datetime'].astype(str)
+            fig.add_trace(go.Scatter(
+                x=cluster_data[:, 0], 
+                y=cluster_data[:, 1], 
+                mode='markers', 
+                marker=dict(color=cluster_label, colorscale='viridis', size=8), 
+                name=f'Cluster_{cluster_label}',
+                legendgroup=f'Cluster_{cluster_label}',
+                hoverinfo='text',
+                text=text + "<br>" + text2,
+                showlegend=True
+            ), row=i, col=1)
+
+        fig.update_layout(title_text=type(algorithm).__name__)
+        
+        unique_clusters = data[f'Cluster_{type(algorithm).__name__}'].unique()
+        hsl_colors = ['hsl(200, 80%, 50%)', 'hsl(100, 80%, 50%)', 'hsl(0, 80%, 50%)']
+        cluster_colors = {cluster: color for cluster, color in zip(sorted_clusters, hsl_colors)}
+
+        for j, col in enumerate(numeric_cols, start=1):
+            cluster_col = data[f'Cluster_{type(algorithm).__name__}']
+            fig_timeseries_cluster.add_trace(go.Scatter(x=data_index['Datetime'], y=data[col], mode='lines', name=col, marker=dict(color='grey', size=5)), row=j, col=1)
+            fig_timeseries_cluster.add_trace(go.Scatter(x=data_index['Datetime'], y=data[col], mode='markers', name=col, marker=dict(color=[cluster_colors[c] for c in cluster_col], size=5)), row=j, col=1)
+            fig_timeseries_cluster.update_xaxes(showticklabels=True, row=j, col=1)
     
-    st.dataframe(combined_data)
+    fig_timeseries_cluster.update_layout(height=8000, width=1000, title=f"MaggiPCF FBD: Measurement Timeseries Plot for {type(algorithm).__name__}", showlegend=False)
+    fig_timeseries_cluster.show()
+
+    fig.update_layout(title="Clustering Visualization", showlegend=True, height=3000, width=1100)
+    st.plotly_chart(fig)
 
 def main():
     st.title('Your App Title')
@@ -79,20 +133,20 @@ def main():
         data = load_data(file)
         st.write("Data loaded successfully!")
         
-        if st.sidebar.button("Preprocess Data"):
-            data, data_index, numeric_cols = preprocess_data(data)
-            st.write("Data preprocessed successfully!")
-            
-            if st.sidebar.button("Create Correlation Heatmap"):
-                create_correlation_heatmap(data)
-            
-            if st.sidebar.button("Apply PCA"):
-                n_components = len(data.columns)
-                pca_result = apply_pca(data, n_components)
-                
-                if st.sidebar.button("Plot Clusters"):
-                    algorithm = AgglomerativeClustering(n_clusters=3)
-                    plot_clusters(algorithm, data, pca_result, numeric_cols, data_index)
+        # Preprocess Data
+        data, data_index, numeric_cols = preprocess_data(data)
+        st.write("Data preprocessed successfully!")
+        
+        # Create Correlation Heatmap
+        create_correlation_heatmap(data)
+        
+        # Apply PCA
+        n_components = len(data.columns)
+        pca_result = apply_pca(data, n_components)
+        
+        # Plot Clusters
+        algorithm = AgglomerativeClustering(n_clusters=3)
+        plot_clusters(algorithm, data, pca_result, numeric_cols, data_index)
 
 if __name__ == "__main__":
     main()
