@@ -134,6 +134,8 @@ def main():
         if start_date <= end_date:
             start_datetime = pd.to_datetime(start_date) + pd.to_timedelta(start_time, unit='h')
             end_datetime = pd.to_datetime(end_date) + pd.to_timedelta(end_time, unit='h')
+            st.write(start_datetime)
+            st.write(end_datetime)
             
             mask = (data['Datetime'] >= start_datetime) & (data['Datetime'] <= end_datetime)
             filtered_data = data[mask]
