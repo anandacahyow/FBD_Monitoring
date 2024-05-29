@@ -135,7 +135,7 @@ def main():
         end_datetime = datetime.combine(end_date, end_time)
         
         # Filter DataFrame based on the selected date and time ranges
-        data = data.drop_duplicates(subset=['Datetime'], keep='first')
+        #data = data.drop_duplicates(subset=['Datetime'], keep='first')
         #data.reset_index(drop=True, inplace=True)
         st.write(start_datetime)
         st.write(end_datetime)
