@@ -121,25 +121,25 @@ def main():
     st.title("⏱ FBD-360 CLustering App")
     uploaded_file = st.file_uploader("Upload CSV file", type=["csv"])
     
-    st.sidebar.title("⏳ Time Window :")
-    # Create date range picker for filtering by date in the sidebar
-    start_date = st.sidebar.date_input("Start Date", min_value=df['Start Datetime'].min().date(),
-                                       max_value=df['End Datetime'].max().date(),
-                                       value=df['Start Datetime'].min().date())
-    start_time = st.sidebar.slider("Start Time", value=pd.Timestamp("06:00:00").time(), format="HH:mm:ss")
-        
-    end_date = st.sidebar.date_input("End Date", min_value=df['Start Datetime'].min().date(),
-                                     max_value=df['End Datetime'].max().date(),
-                                     value=df['End Datetime'].max().date())
-    end_time = st.sidebar.slider("End Time", value=pd.Timestamp("06:00:00").time(), format="HH:mm:ss")
-
     if uploaded_file is not None:
         data = load_data(uploaded_file)
 
+        st.sidebar.title("⏳ Time Window :")
+        # Create date range picker for filtering by date in the sidebar
+        start_date = st.sidebar.date_input("Start Date", min_value=data['Datetime'].min().date(),
+                                           max_value=data['Datetime'].max().date(),
+                                           value=data['Datetime'].min().date())
+        start_time = st.sidebar.slider("Start Time", value=pd.Timestamp("06:00:00").time(), format="HH:mm:ss")
+            
+        end_date = st.sidebar.date_input("End Date", min_value=data['Datetime'].min().date(),
+                                         max_value=data['Datetime'].max().date(),
+                                         value=data['Datetime'].max().date())
+        end_time = st.sidebar.slider("End Time", value=pd.Timestamp("06:00:00").time(), format="HH:mm:ss")
+        
         combined_start_datetime = datetime.combine(start_date, start_time)
         combined_end_datetime = datetime.combine(end_date, end_time)
         
-        data = data[(data['Start Datetime'] >= combined_start_datetime) & (data['End Datetime'] <= combined_end_datetime)]
+        data = data[(data['Datetime'] >= combined_start_datetime) & (data['Datetime'] <= combined_end_datetime)]
         
         data, data_index, numeric_cols = preprocess_data(data)
         data2, data_index2, numeric_cols2 = data.copy(), data_index.copy(), numeric_cols.copy()
