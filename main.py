@@ -24,14 +24,12 @@ def load_data(file):
     data = pd.read_csv(file,usecols=columns)
     data['Datetime'] = pd.to_datetime(data['Date On Shift'] + ' ' + data['Time'])
     data = data[data['Shift Name'].isin(['Shift 1', 'Shift 2', 'Shift 3'])]
+    data.reset_index(drop=True, inplace=True)  # Resetting index after filtering rows
     st.write(data)
     
     for i in range(1, len(data)):
-        if i == 0:
-            continue
-        else:
-            if data.loc[i, 'Datetime'] < data.loc[i - 1, 'Datetime']:
-                data.loc[i, 'Datetime'] += timedelta(days=1)
+        if data.loc[i, 'Datetime'] < data.loc[i - 1, 'Datetime']:
+            data.loc[i, 'Datetime'] += timedelta(days=1)
             
     data = data.iloc[-2500:, :]
     data = data[['Datetime'] + [col for col in data.columns if col not in ['Date On Shift', 'Time']]]
