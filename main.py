@@ -118,34 +118,33 @@ def plot_clusters(algorithms, data, pca_result, numeric_cols, data_index):
     st.plotly_chart(fig_timeseries_cluster)
 
 def main():
-    st.title("⏱ FBD-360 CLustering App")
+    st.title("⏱ FBD-360 Clustering App")
     uploaded_file = st.file_uploader("Upload CSV file", type=["csv"])
-    
+
     if uploaded_file is not None:
         data = load_data(uploaded_file)
-
-        st.sidebar.title("⏳ Time Window :")
-        start_date, end_date = st.sidebar.date_range_input("Select Date Range", 
-                                                    min_value=data['Datetime'].min().date(),
-                                                    max_value=data['Datetime'].max().date(),
-                                                    value=(data['Datetime'].min().date(), data['Datetime'].max().date()))
         
-        #combined_start_datetime = datetime.combine(start_date, start_time)
-        #combined_end_datetime = datetime.combine(end_date, end_time)
+        st.sidebar.title("🔍 Data Filter:")
+        start_date = st.sidebar.date_input("Start Date")
+        end_date = st.sidebar.date_input("End Date")
         
-        data = data[(data['Datetime'] >= start_date) & (data['Datetime'] <= end_date)]
-        
-        data, data_index, numeric_cols = preprocess_data(data)
-        data2, data_index2, numeric_cols2 = data.copy(), data_index.copy(), numeric_cols.copy()
-        #create_correlation_heatmap(data)
-        
-        n_components = len(data.columns)
-        pca_result = apply_pca(data, n_components)
-        
-        algorithm = [AgglomerativeClustering(n_clusters=3)]
-        st.write(final_dataframe(algorithm, data2, pca_result, numeric_cols2, data_index2))
-        plot_clusters(algorithm, data, pca_result, numeric_cols, data_index)
-        
+        if start_date <= end_date:
+            mask = (data['date'] >= start_date) & (data['date'] <= end_date)
+            filtered_data = data.loc[mask]
+            
+            # Slice data
+            filtered_data, data_index, numeric_cols = preprocess_data(filtered_data)
+            data2, data_index2, numeric_cols2 = filtered_data.copy(), data_index.copy(), numeric_cols.copy()
+            
+            # Do further processing with filtered data
+            n_components = len(filtered_data.columns)
+            pca_result = apply_pca(filtered_data, n_components)
+            
+            algorithm = [AgglomerativeClustering(n_clusters=3)]
+            st.write(final_dataframe(algorithm, data2, pca_result, numeric_cols2, data_index2))
+            plot_clusters(algorithm, filtered_data, pca_result, numeric_cols, data_index)
+        else:
+            st.error("Error: End date must be after start date.")
 
 if __name__ == "__main__":
     main()
