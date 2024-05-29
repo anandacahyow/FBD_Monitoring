@@ -61,6 +61,19 @@ def apply_pca(data, n_components):
     
     return pca_result
 
+def final_datafame(algorithms, data, pca_result, numeric_cols, data_index):
+    method_names = [type(algorithm).__name__ for algorithm in algorithms]
+    fig_timeseries_cluster = make_subplots(rows=len(numeric_cols), cols=1, subplot_titles=numeric_cols, shared_xaxes=True, vertical_spacing=0.01, horizontal_spacing=0.1)
+
+    for i, algorithm in enumerate(algorithms, start=1):
+        algorithm.fit(pca_result)
+        
+        cluster_labels = algorithm.labels_
+        data.insert(0, f'Cluster_{type(algorithm).__name__}', cluster_labels)
+    
+        combined_data = pd.concat([data_index, data], axis=1)
+    return combined_data
+
 def plot_clusters(algorithms, data, pca_result, numeric_cols, data_index):
     method_names = [type(algorithm).__name__ for algorithm in algorithms]
     fig_timeseries_cluster = make_subplots(rows=len(numeric_cols), cols=1, subplot_titles=numeric_cols, shared_xaxes=True, vertical_spacing=0.01, horizontal_spacing=0.1)
@@ -98,7 +111,7 @@ def main():
         pca_result = apply_pca(data, n_components)
         
         algorithm = [AgglomerativeClustering(n_clusters=3)]
-        st.write(data)
+        st.write(final_dataframe(algorithm, data, pca_result, numeric_cols, data_index))
         plot_clusters(algorithm, data, pca_result, numeric_cols, data_index)
         
 
