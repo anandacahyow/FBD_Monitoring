@@ -22,7 +22,7 @@ def load_data(file):
                'M6703 Speed Blwr 2', 'M6704 Speed Blwr 3', 'M6705 Speed Blwr 4', 'M6706 Speed FBD Vibr',
                'IS_SteamSupply', 'IS_SteamFlow', 'IS_SteamFlowTOT']
     
-    data = load_data(file_path, columns)
+    data = load_data(file, columns)
     data['Datetime'] = pd.to_datetime(data['Date On Shift'] + ' ' + data['Time'])
     
     for i in range(1, len(data)):
