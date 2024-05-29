@@ -123,7 +123,6 @@ def main():
 
     if uploaded_file is not None:
         data = load_data(uploaded_file)
-        st.dataframe(data)
         
         # Sidebar for data filter
         st.sidebar.title("🔍 Data Filter:")
