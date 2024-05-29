@@ -136,11 +136,14 @@ def main():
         
         # Filter DataFrame based on the selected date and time ranges
         data = data.drop_duplicates(subset=['Datetime'], keep='first')
-        data.reset_index(drop=True, inplace=True)
+        #data.reset_index(drop=True, inplace=True)
         st.write(start_datetime)
         st.write(end_datetime)
         
-        filtered_df = data.loc[(data['Datetime'] >= start_datetime) & (data['Datetime'] <= end_datetime)]
+        #filtered_df = data.loc[(data['Datetime'] >= start_datetime) & (data['Datetime'] <= end_datetime)]
+
+        data.set_index('Datetime', inplace=True)
+        filtered_data = data.loc[start_datetime:end_datetime]
 
         #filtered_data = data.copy()        
         filtered_data, data_index, numeric_cols = preprocess_data(filtered_data)
