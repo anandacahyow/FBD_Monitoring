@@ -105,13 +105,14 @@ def main():
     if uploaded_file is not None:
         data = load_data(uploaded_file)
         data, data_index, numeric_cols = preprocess_data(data)
+        data2, data_index2, numeric_cols2 = data.copy(), data_index.copy(), numeric_cols.copy()
         #create_correlation_heatmap(data)
         
         n_components = len(data.columns)
         pca_result = apply_pca(data, n_components)
         
         algorithm = [AgglomerativeClustering(n_clusters=3)]
-        st.write(final_dataframe(algorithm, data, pca_result, numeric_cols, data_index))
+        st.write(final_dataframe(algorithm, data2, pca_result, numeric_cols2, data_index2))
         plot_clusters(algorithm, data, pca_result, numeric_cols, data_index)
         
 
