@@ -47,7 +47,7 @@ def preprocess_data(data):
 
 def create_correlation_heatmap(data):
     correlation_matrix = data.corr()
-    correlation_matrix.to_excel("correlation_matrix.xlsx")
+    #correlation_matrix.to_excel("correlation_matrix.xlsx")
     fig_corr_heatmap = px.imshow(correlation_matrix,
                                  labels=dict(x="Numerical Columns", y="Numerical Columns"))
     fig_corr_heatmap.update_layout(title="Correlation Heatmap")
@@ -62,12 +62,12 @@ def apply_pca(data, n_components):
     
     principal_components = pca.components_
     pc_df = pd.DataFrame(principal_components, columns=data.columns)
-    pc_df.to_excel("Database/PCA_components.xlsx")
+    #pc_df.to_excel("Database/PCA_components.xlsx")
     
     eigenvalues = pca.explained_variance_
     percentage = (eigenvalues / eigenvalues.sum()) * 100
     eigenvalues_df = pd.DataFrame({'Eigenvalues (Explained Variance)': eigenvalues, 'Percentage': percentage})
-    eigenvalues_df.to_excel("Database/eigen.xlsx")
+    #eigenvalues_df.to_excel("Database/eigen.xlsx")
     
     return pca_result, principal_components
 
@@ -83,7 +83,7 @@ def plot_clusters(algorithms, data, pca_result, numeric_cols, data_index):
         data.insert(0, f'Cluster_{type(algorithm).__name__}', cluster_labels)
     
         combined_data = pd.concat([data_index, data], axis=1)
-        combined_data.to_excel(f'Database/{type(algorithm).__name__}_clustered_data.xlsx', index=False)
+        #combined_data.to_excel(f'Database/{type(algorithm).__name__}_clustered_data.xlsx', index=False)
         
         for cluster_label in np.unique(cluster_labels):
             cluster_data = pca_result[cluster_labels == cluster_label]
