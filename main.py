@@ -23,7 +23,9 @@ def load_data(file):
                'IS_SteamSupply', 'IS_SteamFlow', 'IS_SteamFlowTOT']
     data = pd.read_csv(file,usecols=columns)
     data['Datetime'] = pd.to_datetime(data['Date On Shift'] + ' ' + data['Time'])
-    data = data[data['Shift Name'].isin(['Shift 1', 'Shift 2', 'Shift 3'])]
+    
+    #data = data[data['Shift Name'].isin(['Shift 1', 'Shift 2', 'Shift 3'])]
+    
     for i in range(1, len(data)):
         if data.loc[i, 'Datetime'] < data.loc[i - 1, 'Datetime']:
             data.loc[i, 'Datetime'] += timedelta(days=1)
