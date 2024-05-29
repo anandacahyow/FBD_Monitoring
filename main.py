@@ -129,7 +129,7 @@ def main():
         end_date = st.sidebar.date_input("End Date")
         
         if start_date <= end_date:
-            mask = (data['date'] >= start_date) & (data['date'] <= end_date)
+            mask = (data['Datetime'] >= start_date) & (data['Datetime'] <= end_date)
             filtered_data = data.loc[mask]
             
             # Slice data
