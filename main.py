@@ -61,7 +61,7 @@ def apply_pca(data, n_components):
     
     return pca_result
 
-def final_datafame(algorithms, data, pca_result, numeric_cols, data_index):
+def final_dataframe(algorithms, data, pca_result, numeric_cols, data_index):
     method_names = [type(algorithm).__name__ for algorithm in algorithms]
     fig_timeseries_cluster = make_subplots(rows=len(numeric_cols), cols=1, subplot_titles=numeric_cols, shared_xaxes=True, vertical_spacing=0.01, horizontal_spacing=0.1)
 
