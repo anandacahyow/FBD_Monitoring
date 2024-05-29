@@ -124,14 +124,18 @@ def main():
     if uploaded_file is not None:
         data = load_data(uploaded_file)
         
+        # Sidebar for data filter
         st.sidebar.title("🔍 Data Filter:")
         start_date = st.sidebar.date_input("Start Date")
         end_date = st.sidebar.date_input("End Date")
-        st.write(start_date)
-        st.write(type(end_date))
+        start_time = st.sidebar.slider("Start Time", 0, 23, step=1)
+        end_time = st.sidebar.slider("End Time", 0, 23, step=1)
         
         if start_date <= end_date:
-            mask = (data['Datetime'] >= start_date) & (data['Datetime'] <= end_date)
+            start_datetime = pd.to_datetime(start_date) + pd.to_timedelta(start_time, unit='h')
+            end_datetime = pd.to_datetime(end_date) + pd.to_timedelta(end_time, unit='h')
+            
+            mask = (data['Datetime'] >= start_datetime) & (data['Datetime'] <= end_datetime)
             filtered_data = data.loc[mask]
             
             # Slice data
