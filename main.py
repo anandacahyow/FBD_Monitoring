@@ -123,6 +123,7 @@ def main():
 
     if uploaded_file is not None:
         data = load_data(uploaded_file)
+        data = data.reset_index(drop=True)
         
         # Sidebar for data filter
         st.sidebar.title("🔍 Data Filter:")
