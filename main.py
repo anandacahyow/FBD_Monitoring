@@ -139,7 +139,7 @@ def main():
         #data.reset_index(drop=True, inplace=True)
         st.write(start_datetime)
         st.write(end_datetime)
-        st.write(type(data))
+        st.write(data)
 
         
         filtered_df = data.loc[(data['Datetime'] >= start_datetime) & (data['Datetime'] <= end_datetime)]
