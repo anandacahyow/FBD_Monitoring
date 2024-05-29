@@ -139,7 +139,7 @@ def main():
         combined_start_datetime = datetime.combine(start_date, start_time)
         combined_end_datetime = datetime.combine(end_date, end_time)
         
-        data = df[(df['Start Datetime'] >= combined_start_datetime) & (df['End Datetime'] <= combined_end_datetime)]
+        data = data[(data['Start Datetime'] >= combined_start_datetime) & (data['End Datetime'] <= combined_end_datetime)]
         
         data, data_index, numeric_cols = preprocess_data(data)
         data2, data_index2, numeric_cols2 = data.copy(), data_index.copy(), numeric_cols.copy()
