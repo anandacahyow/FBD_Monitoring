@@ -98,7 +98,9 @@ def main():
         pca_result = apply_pca(data, n_components)
         
         algorithm = [AgglomerativeClustering(n_clusters=3)]
+        st.write(data)
         plot_clusters(algorithm, data, pca_result, numeric_cols, data_index)
+        
 
 if __name__ == "__main__":
     main()
