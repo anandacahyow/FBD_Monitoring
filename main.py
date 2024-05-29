@@ -123,37 +123,26 @@ def main():
 
     if uploaded_file is not None:
         data = load_data(uploaded_file)
-        data = data.reset_index(drop=True)
+
+        start_datetime = pd.to_datetime(start_date) + pd.to_timedelta(start_time, unit='h')
+        end_datetime = pd.to_datetime(end_date) + pd.to_timedelta(end_time, unit='h')
+        st.write(start_datetime)
+        st.write(end_datetime)
         
-        # Sidebar for data filter
-        st.sidebar.title("🔍 Data Filter:")
-        start_date = st.sidebar.date_input("Start Date")
-        end_date = st.sidebar.date_input("End Date")
-        start_time = st.sidebar.slider("Start Time", 0, 23, step=1)
-        end_time = st.sidebar.slider("End Time", 0, 23, step=1)
+        mask = (data['Datetime'] >= start_datetime) & (data['Datetime'] <= end_datetime)
+        filtered_data = data[mask]
         
-        if start_date <= end_date:
-            start_datetime = pd.to_datetime(start_date) + pd.to_timedelta(start_time, unit='h')
-            end_datetime = pd.to_datetime(end_date) + pd.to_timedelta(end_time, unit='h')
-            st.write(start_datetime)
-            st.write(end_datetime)
-            
-            mask = (data['Datetime'] >= start_datetime) & (data['Datetime'] <= end_datetime)
-            filtered_data = data[mask]
-            
-            # Slice data
-            filtered_data, data_index, numeric_cols = preprocess_data(filtered_data)
-            data2, data_index2, numeric_cols2 = filtered_data.copy(), data_index.copy(), numeric_cols.copy()
-            
-            # Do further processing with filtered data
-            n_components = len(filtered_data.columns)
-            pca_result = apply_pca(filtered_data, n_components)
-            
-            algorithm = [AgglomerativeClustering(n_clusters=3)]
-            st.write(final_dataframe(algorithm, data2, pca_result, numeric_cols2, data_index2))
-            plot_clusters(algorithm, filtered_data, pca_result, numeric_cols, data_index)
-        else:
-            st.error("Error: End date must be after start date.")
+        # Slice data
+        filtered_data, data_index, numeric_cols = preprocess_data(filtered_data)
+        data2, data_index2, numeric_cols2 = filtered_data.copy(), data_index.copy(), numeric_cols.copy()
+        
+        # Do further processing with filtered data
+        n_components = len(filtered_data.columns)
+        pca_result = apply_pca(filtered_data, n_components)
+        
+        algorithm = [AgglomerativeClustering(n_clusters=3)]
+        st.write(final_dataframe(algorithm, data2, pca_result, numeric_cols2, data_index2))
+        plot_clusters(algorithm, filtered_data, pca_result, numeric_cols, data_index)
 
 if __name__ == "__main__":
     main()
