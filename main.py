@@ -22,8 +22,8 @@ def load_data(file):
                'M6703 Speed Blwr 2', 'M6704 Speed Blwr 3', 'M6705 Speed Blwr 4', 'M6706 Speed FBD Vibr',
                'IS_SteamSupply', 'IS_SteamFlow', 'IS_SteamFlowTOT']
     data = pd.read_csv(file,usecols=columns)
-    data = data[data['Shift Name'].isin(['Shift 1', 'Shift 2', 'Shift 3'])]
     data['Datetime'] = pd.to_datetime(data['Date On Shift'] + ' ' + data['Time'])
+    data = data[data['Shift Name'].isin(['Shift 1', 'Shift 2', 'Shift 3'])]
     st.write(data)
     
     for i in range(1, len(data)):
