@@ -117,39 +117,35 @@ def plot_clusters(algorithms, data, pca_result, numeric_cols, data_index):
     fig_timeseries_cluster.update_layout(height=8000, width=1000, title=f"MaggiPCF FBD: Measurement Timeseries Plot for {type(algorithm).__name__}", showlegend=False)
     st.plotly_chart(fig_timeseries_cluster)
 
-def main():
-    st.title("⏱ FBD-360 Clustering App")
-    uploaded_file = st.file_uploader("Upload CSV file", type=["csv"])
+st.title("⏱ FBD-360 Clustering App")
+uploaded_file = st.file_uploader("Upload CSV file", type=["csv"])
 
-    if uploaded_file is not None:
-        data = load_data(uploaded_file)
+if uploaded_file is not None:
+    data = load_data(uploaded_file)
 
-        start_date = st.date_input("Start Date", value=pd.to_datetime('2024-04-15'))
-        end_date = st.date_input("End Date", value=pd.to_datetime('2024-05-30'))
-        
-        # Create Streamlit widgets for start and end times
-        start_time = st.time_input("Start Time", value=pd.to_datetime('00:00').time())
-        end_time = st.time_input("End Time", value=pd.to_datetime('23:59').time())
+    start_date = st.date_input("Start Date", value=pd.to_datetime('2024-04-15'))
+    end_date = st.date_input("End Date", value=pd.to_datetime('2024-05-30'))
+    
+    # Create Streamlit widgets for start and end times
+    start_time = st.time_input("Start Time", value=pd.to_datetime('00:00').time())
+    end_time = st.time_input("End Time", value=pd.to_datetime('23:59').time())
 
-        start_datetime = pd.to_datetime(str(start_date) + ' ' + str(start_time))
-        end_datetime = pd.to_datetime(str(end_date) + ' ' + str(end_time))
-        
-        # Filter DataFrame based on the selected date and time ranges
-        data = data.drop_duplicates(subset=['Datetime'], keep='first')
-        filtered_df = data[(data['Datetime'] >= start_datetime) & (data['Datetime'] <= end_datetime)]
+    start_datetime = pd.to_datetime(str(start_date) + ' ' + str(start_time))
+    end_datetime = pd.to_datetime(str(end_date) + ' ' + str(end_time))
+    
+    # Filter DataFrame based on the selected date and time ranges
+    data = data.drop_duplicates(subset=['Datetime'], keep='first')
+    filtered_df = data[(data['Datetime'] >= start_datetime) & (data['Datetime'] <= end_datetime)]
 
-        #filtered_data = data.copy()        
-        # Slice data
-        filtered_data, data_index, numeric_cols = preprocess_data(filtered_data)
-        data2, data_index2, numeric_cols2 = filtered_data.copy(), data_index.copy(), numeric_cols.copy()
-        
-        # Do further processing with filtered data
-        n_components = len(filtered_data.columns)
-        pca_result = apply_pca(filtered_data, n_components)
-        
-        algorithm = [AgglomerativeClustering(n_clusters=3)]
-        st.write(final_dataframe(algorithm, data2, pca_result, numeric_cols2, data_index2))
-        plot_clusters(algorithm, filtered_data, pca_result, numeric_cols, data_index)
-
-if __name__ == "__main__":
-    main()
+    #filtered_data = data.copy()        
+    # Slice data
+    filtered_data, data_index, numeric_cols = preprocess_data(filtered_data)
+    data2, data_index2, numeric_cols2 = filtered_data.copy(), data_index.copy(), numeric_cols.copy()
+    
+    # Do further processing with filtered data
+    n_components = len(filtered_data.columns)
+    pca_result = apply_pca(filtered_data, n_components)
+    
+    algorithm = [AgglomerativeClustering(n_clusters=3)]
+    st.write(final_dataframe(algorithm, data2, pca_result, numeric_cols2, data_index2))
+    plot_clusters(algorithm, filtered_data, pca_result, numeric_cols, data_index)
