@@ -135,6 +135,7 @@ def main():
         end_datetime = pd.to_datetime(str(end_date) + ' ' + str(end_time))
         
         # Filter DataFrame based on the selected date and time ranges
+        data = data.drop_duplicates(subset=['Datetime'], keep='first')
         filtered_df = data[(data['Datetime'] >= start_datetime) & (data['Datetime'] <= end_datetime)]
 
         #filtered_data = data.copy()        
