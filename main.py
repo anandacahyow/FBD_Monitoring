@@ -122,16 +122,16 @@ def main():
     uploaded_file = st.file_uploader("Upload CSV file", type=["csv"])
     
     st.sidebar.title("⏳ Time Window :")
-        # Create date range picker for filtering by date in the sidebar
-        start_date = st.sidebar.date_input("Start Date", min_value=df['Start Datetime'].min().date(),
+    # Create date range picker for filtering by date in the sidebar
+    start_date = st.sidebar.date_input("Start Date", min_value=df['Start Datetime'].min().date(),
                                        max_value=df['End Datetime'].max().date(),
                                        value=df['Start Datetime'].min().date())
-        start_time = st.sidebar.slider("Start Time", value=pd.Timestamp("06:00:00").time(), format="HH:mm:ss")
+    start_time = st.sidebar.slider("Start Time", value=pd.Timestamp("06:00:00").time(), format="HH:mm:ss")
         
-        end_date = st.sidebar.date_input("End Date", min_value=df['Start Datetime'].min().date(),
+    end_date = st.sidebar.date_input("End Date", min_value=df['Start Datetime'].min().date(),
                                      max_value=df['End Datetime'].max().date(),
                                      value=df['End Datetime'].max().date())
-        end_time = st.sidebar.slider("End Time", value=pd.Timestamp("06:00:00").time(), format="HH:mm:ss")
+    end_time = st.sidebar.slider("End Time", value=pd.Timestamp("06:00:00").time(), format="HH:mm:ss")
 
     if uploaded_file is not None:
         data = load_data(uploaded_file)
