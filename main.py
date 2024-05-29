@@ -137,7 +137,8 @@ def main():
         # Filter DataFrame based on the selected date and time ranges
         data = data.drop_duplicates(subset=['Datetime'], keep='first')
         data.reset_index(drop=True, inplace=True)
-        st.write(data.columns)
+        st.write(data[data.index.duplicated()])
+        
         filtered_df = data[(data['Datetime'] >= start_datetime) & (data['Datetime'] <= end_datetime)]
 
         #filtered_data = data.copy()        
