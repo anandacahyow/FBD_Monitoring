@@ -127,6 +127,8 @@ def main():
         st.sidebar.title("🔍 Data Filter:")
         start_date = st.sidebar.date_input("Start Date")
         end_date = st.sidebar.date_input("End Date")
+        st.write(start_date)
+        st.write(type(end_date))
         
         if start_date <= end_date:
             mask = (data['Datetime'] >= start_date) & (data['Datetime'] <= end_date)
