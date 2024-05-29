@@ -136,7 +136,7 @@ def main():
             end_datetime = pd.to_datetime(end_date) + pd.to_timedelta(end_time, unit='h')
             
             mask = (data['Datetime'] >= start_datetime) & (data['Datetime'] <= end_datetime)
-            filtered_data = data.loc[mask]
+            filtered_data = data[mask]
             
             # Slice data
             filtered_data, data_index, numeric_cols = preprocess_data(filtered_data)
