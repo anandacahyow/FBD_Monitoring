@@ -24,6 +24,7 @@ def load_data(file):
     data = pd.read_csv(file,usecols=columns)
     data = data[data['Shift Name'].isin(['Shift 1', 'Shift 2', 'Shift 3'])]
     data['Datetime'] = pd.to_datetime(data['Date On Shift'] + ' ' + data['Time'])
+    st.write(data)
     
     for i in range(1, len(data)):
         if data.loc[i, 'Datetime'] < data.loc[i - 1, 'Datetime']:
