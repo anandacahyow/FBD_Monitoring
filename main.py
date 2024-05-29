@@ -72,7 +72,6 @@ def plot_clusters(algorithms, data, pca_result, numeric_cols, data_index):
         data.insert(0, f'Cluster_{type(algorithm).__name__}', cluster_labels)
     
         combined_data = pd.concat([data_index, data], axis=1)
-        combined_data.to_excel(f'Database/{type(algorithm).__name__}_clustered_data.xlsx', index=False)
          
         unique_clusters = data[f'Cluster_{type(algorithm).__name__}'].unique()
         hsl_colors = ['hsl(200, 80%, 50%)', 'hsl(100, 80%, 50%)', 'hsl(0, 80%, 50%)']
