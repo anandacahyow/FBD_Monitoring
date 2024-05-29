@@ -27,8 +27,11 @@ def load_data(file):
     st.write(data)
     
     for i in range(1, len(data)):
-        if data.loc[i, 'Datetime'] < data.loc[i - 1, 'Datetime']:
-            data.loc[i, 'Datetime'] += timedelta(days=1)
+        if i == 0:
+            continue
+        else:
+            if data.loc[i, 'Datetime'] < data.loc[i - 1, 'Datetime']:
+                data.loc[i, 'Datetime'] += timedelta(days=1)
             
     data = data.iloc[-2500:, :]
     data = data[['Datetime'] + [col for col in data.columns if col not in ['Date On Shift', 'Time']]]
