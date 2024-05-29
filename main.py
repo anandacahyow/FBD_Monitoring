@@ -25,7 +25,6 @@ def load_data(file):
     data['Datetime'] = pd.to_datetime(data['Date On Shift'] + ' ' + data['Time'])
     data = data[data['Shift Name'].isin(['Shift 1', 'Shift 2', 'Shift 3'])]
     data.reset_index(drop=True, inplace=True)  # Resetting index after filtering rows
-    st.write(data)
     
     for i in range(1, len(data)):
         if data.loc[i, 'Datetime'] < data.loc[i - 1, 'Datetime']:
@@ -123,6 +122,7 @@ def main():
 
     if uploaded_file is not None:
         data = load_data(uploaded_file)
+        st.write(data)
         
         # Sidebar for data filter
         st.sidebar.title("🔍 Data Filter:")
