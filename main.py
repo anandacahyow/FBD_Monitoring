@@ -61,38 +61,32 @@ def apply_pca(data, n_components):
     
     return pca_result
 
-def plot_clusters(algorithm, data, pca_result, numeric_cols, data_index):
-    algorithm.fit(pca_result)
-        
-    cluster_labels = algorithm.labels_
-    data.insert(0, f'Cluster_{type(algorithm).__name__}', cluster_labels)
-    
-    combined_data = pd.concat([data_index, data], axis=1)
-    
+def plot_clusters(algorithms, data, pca_result, numeric_cols, data_index):
+    method_names = [type(algorithm).__name__ for algorithm in algorithms]
     fig_timeseries_cluster = make_subplots(rows=len(numeric_cols), cols=1, subplot_titles=numeric_cols, shared_xaxes=True, vertical_spacing=0.01, horizontal_spacing=0.1)
-    
-    for cluster_label in np.unique(cluster_labels):
-        cluster_data = pca_result[cluster_labels == cluster_label]
-        sorted_clusters = sorted(
-            np.unique(cluster_labels), 
-            key=lambda cluster_label: np.mean(pca_result[cluster_labels == cluster_label], axis=0)[0]
-        )
-        text = data_index['Recipe Name']
-        text2 = data_index['Datetime'].astype(str)
-        fig_timeseries_cluster.add_trace(go.Scatter(
-            x=cluster_data[:, 0], 
-            y=cluster_data[:, 1], 
-            mode='markers', 
-            marker=dict(color=cluster_label, colorscale='viridis', size=8), 
-            name=f'Cluster_{cluster_label}',
-            legendgroup=f'Cluster_{cluster_label}',
-            hoverinfo='text',
-            text=text + "<br>" + text2,
-            showlegend=True
-        ))
 
-    fig_timeseries_cluster.update_layout(height=8000, width=1000, title=f"Measurement Timeseries Plot", showlegend=False)
+    for i, algorithm in enumerate(algorithms, start=1):
+        algorithm.fit(pca_result)
+        
+        cluster_labels = algorithm.labels_
+        data.insert(0, f'Cluster_{type(algorithm).__name__}', cluster_labels)
+    
+        combined_data = pd.concat([data_index, data], axis=1)
+        combined_data.to_excel(f'Database/{type(algorithm).__name__}_clustered_data.xlsx', index=False)
+         
+        unique_clusters = data[f'Cluster_{type(algorithm).__name__}'].unique()
+        hsl_colors = ['hsl(200, 80%, 50%)', 'hsl(100, 80%, 50%)', 'hsl(0, 80%, 50%)']
+        cluster_colors = {cluster: color for cluster, color in zip(unique_clusters, hsl_colors)}
+
+        for j, col in enumerate(numeric_cols, start=1):
+            cluster_col = data[f'Cluster_{type(algorithm).__name__}']
+            fig_timeseries_cluster.add_trace(go.Scatter(x=data_index['Datetime'], y=data[col], mode='lines', name=col, marker=dict(color='grey', size=5)), row=j, col=1)
+            fig_timeseries_cluster.add_trace(go.Scatter(x=data_index['Datetime'], y=data[col], mode='markers', name=col, marker=dict(color=[cluster_colors[c] for c in cluster_col], size=5)), row=j, col=1)
+            fig_timeseries_cluster.update_xaxes(showticklabels=True, row=j, col=1)
+    
+    fig_timeseries_cluster.update_layout(height=8000, width=1000, title=f"MaggiPCF FBD: Measurement Timeseries Plot for {type(algorithm).__name__}", showlegend=False)
     st.plotly_chart(fig_timeseries_cluster)
+    st.subheader("Clustering Visualization")
 
 def main():
     st.title("Streamlit Clustering App")
