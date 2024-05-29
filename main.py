@@ -13,7 +13,16 @@ import warnings
 warnings.filterwarnings("ignore")
 
 def load_data(file):
-    data = pd.read_csv(file)
+    columns = ['Date On Shift', 'Time', 'Shift Name', 'Recipe Name', 'Operator Name', 'FLM  Name',
+               'TR6701 Temp. 1', 'TR6702 Temp. 2', 'TR6702 Temp. 3', 'TR6702 Temp. 4', 'TR6705 Ex. Temp.',
+               'PT6701 Press. 1', 'PT6702 Press. 2', 'PT6703 Press. 3', 'PT6704 Press. 4',
+               'DP6701 Diff Press. 1', 'DP6702 Diff Press. 2', 'DP6703 Diff Press. 3', 'DP6704 Diff Press. 4',
+               'TT6701 Mix. Temp. 1', 'TT6702 Mix. Temp. 2', 'TT6703 Mix. Temp. 3', 'TT6704 Mix. Temp. 4',
+               'PT6711 Mix. Press. 1', 'PT6712 Mix. Press. 2', 'M6701 Speed Exh', 'M6702 Speed Blwr 1',
+               'M6703 Speed Blwr 2', 'M6704 Speed Blwr 3', 'M6705 Speed Blwr 4', 'M6706 Speed FBD Vibr',
+               'IS_SteamSupply', 'IS_SteamFlow', 'IS_SteamFlowTOT']
+    
+    data = load_data(file_path, columns)
     data['Datetime'] = pd.to_datetime(data['Date On Shift'] + ' ' + data['Time'])
     
     for i in range(1, len(data)):
