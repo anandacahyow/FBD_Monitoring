@@ -25,7 +25,7 @@ def load_data(file):
     data['Datetime'] = pd.to_datetime(data['Date On Shift'] + ' ' + data['Time'])
     data = data[data['Shift Name'].isin(['Shift 1', 'Shift 2', 'Shift 3'])]
     data.reset_index(drop=True, inplace=True)  # Resetting index after filtering rows
-    st.write(data)
+    #st.write(data)
     
     for i in range(1, len(data)):
         if data.loc[i, 'Datetime'] < data.loc[i - 1, 'Datetime']:
@@ -134,7 +134,7 @@ def main():
         pca_result = apply_pca(filtered_data, n_components)
         
         algorithm = [AgglomerativeClustering(n_clusters=3)]
-        st.write(final_dataframe(algorithm, data2, pca_result, numeric_cols2, data_index2))
+        st.write(final_dataframe(algorithm, data2, pca_result, numeric_cols2, data_index2), height=300)
         plot_clusters(algorithm, filtered_data, pca_result, numeric_cols, data_index)
 
 if __name__ == "__main__":
