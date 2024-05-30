@@ -9,7 +9,10 @@ from sklearn.decomposition import PCA
 from sklearn.cluster import AgglomerativeClustering
 import numpy as np
 import warnings
+from PIL import Image
 
+img = Image.open('Nestle_Logo.png')
+st.set_page_config(page_title="FBD-360 Monitoring App", page_icon=img,layout="wide")
 warnings.filterwarnings("ignore")
 
 def load_data(file):
@@ -136,6 +139,11 @@ def main():
         algorithm = [AgglomerativeClustering(n_clusters=3)]
         st.write(final_dataframe(algorithm, data2, pca_result, numeric_cols2, data_index2), height=300)
         plot_clusters(algorithm, filtered_data, pca_result, numeric_cols, data_index)
+
+    st.sidebar.image("Nestle_Signature.png")
+    st.sidebar.write("""<p style='font-size: 14px;'>This Web-App is designed to monitor the Parameters of MAGGI PCF FBD Station PT Nestlé Indonesia - Panjang Factory""", unsafe_allow_html=True)
+    st.sidebar.write("""<p style='font-size: 13px;'>For any inquiries, error handling, or assistance, please feel free to reach us through Email: <br>
+<a href="mailto:Ananda.Cahyo@id.nestle.com">Ananda.Cahyo@id.nestle.com <br></p>""", unsafe_allow_html=True)
 
 if __name__ == "__main__":
     main()
