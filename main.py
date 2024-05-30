@@ -31,7 +31,7 @@ def load_data(file):
         if data.loc[i, 'Datetime'] < data.loc[i - 1, 'Datetime']:
             data.loc[i, 'Datetime'] += timedelta(days=1)
             
-    data = data.iloc[-8000:, :]
+    data = data.iloc[-2500:, :]
     data = data[['Datetime'] + [col for col in data.columns if col not in ['Date On Shift', 'Time']]]
     return data
 
